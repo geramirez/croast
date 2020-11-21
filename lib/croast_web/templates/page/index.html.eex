@@ -1,0 +1,2 @@
+<button id="chat-input" type="text">Start</button>
+<div id="messages" role="log" aria-live="polite"></div>
