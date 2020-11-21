@@ -19,4 +19,4 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
   * Forum: https://elixirforum.com/c/phoenix-forum
   * Source: https://github.com/phoenixframework/phoenix
 
-docker run --name croastdb -p 5432:5432 -e POSTGRES_PASSWORD=postgres -d postgres
+docker run --name croastdb -p 5432:5432 -e POSTGRES_PASSWORD=postgres -d postgres# croast
