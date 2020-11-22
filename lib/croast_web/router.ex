@@ -13,11 +13,22 @@ defmodule CroastWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :telemetry do
+    plug :accepts, ["json"]
+  end
+
   scope "/", CroastWeb do
     pipe_through :browser
 
     get "/", PageController, :index
   end
+
+  scope "/telemetry", CroastWeb do
+    pipe_through :telemetry
+
+    post "/", PageController, :telemetry
+  end
+
 
   # Other scopes may use custom stacks.
   # scope "/api", CroastWeb do
