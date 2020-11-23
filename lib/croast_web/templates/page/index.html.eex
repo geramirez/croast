@@ -6,20 +6,22 @@
         <button class="resetButton">New Roast</button>
     </div>
 </div>
+
 <div id="firstCrackTimer">
     <span>Development Time </span><span class="values">00:00:00</span>
     <div>
         <button class="recordButton">Record First Crack</button>
     </div>
 </div>
-<div id="controlLogs">
-    <label>Fan: <input type="number"  min="1" max="9"/></label>
-    <label>Heat: <input type="number"  min="1" max="9"/></label>
-    <label>Temperature: <input type="number"  min="0" max="600"/></label>
-    <button class="recordTelemetry">Record</button>
 
+<div id="controlLogs">
+    <label>Fan: <input id="fan" name="fan" type="number"  min="1" max="9"/></label>
+    <label>Heat: <input id="heat" name="heat" type="number"  min="1" max="9"/></label>
+    <label>Temperature: <input id="temperature" name="temperature" type="number"  min="0" max="600"/></label>
+    <button class="recordTelemetry">Record</button>
 </div>
-<canvas id="roastChart" width="400" height="400"></canvas>
+
+<canvas id="roastChart"></canvas>
 <br>
 <div id="export">
     <div>
