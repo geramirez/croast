@@ -56,31 +56,4 @@ let socket = new Socket("/socket")
 // Finally, connect to the socket:
 socket.connect()
 
-// Now that you are connected, you can join channels with a topic:
-let channel = socket.channel("telemetry:lobby", {})
-
-let chatInput = document.querySelector("#chat-input")
-let messagesContainer = document.querySelector("#messages")
-
-function IoTFake() {
-  channel.push("temperature", { bean: Math.floor(Math.random() * 100), timestamp: Number(new Date()) })
-  setTimeout(IoTFake, 1000);
-}
-
-
-chatInput.addEventListener("click", event => {
-    IoTFake()
-})
-
-channel.on("temperature", ({ bean, timestamp }) => {
-  let messageItem = document.createElement("div")
-  messageItem.innerText = `timestamp: ${bean}, bean temperature: ${timestamp}`
-  messagesContainer.appendChild(messageItem)
-})
-
-
-channel.join()
-  .receive("ok", resp => { console.log("Joined successfully", resp) })
-  .receive("error", resp => { console.log("Unable to join", resp) })
-
 export default socket

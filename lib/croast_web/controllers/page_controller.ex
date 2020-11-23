@@ -5,8 +5,12 @@ defmodule CroastWeb.PageController do
     render(conn, "index.html")
   end
 
-  def telemetry(conn, %{"temperature" => temperature, "timestamp" => timestamp}) do
-    CroastWeb.Endpoint.broadcast("telemetry:lobby", "temperature",  %{"bean" => temperature, "timestamp" => timestamp})
-    json conn, %{ok: true}
+  def telemetry(conn, %{"temperature" => temperature}) do
+    CroastWeb.Endpoint.broadcast("telemetry:lobby", "temperature", %{
+      "bean" => temperature,
+      "timestamp" => DateTime.utc_now() |> DateTime.to_unix(:millisecond)
+    })
+
+    json(conn, %{ok: true})
   end
 end

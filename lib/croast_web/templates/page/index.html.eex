@@ -1,2 +1,2 @@
-<button id="chat-input" type="text">Start</button>
+<canvas id="myChart" width="400" height="400"></canvas>
 <div id="messages" role="log" aria-live="polite"></div>
