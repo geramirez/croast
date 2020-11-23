@@ -101,12 +101,15 @@ const myLineChart = new Chart(ctx, {
 });
 
 let FIRST_CRACK = false;
+let FC_TIME = 0;
+let START_TIME = 0
 const firstCrackTimer = new Timer();
 document
   .querySelector("#firstCrackTimer .recordButton")
   .addEventListener("click", () => {
     firstCrackTimer.start();
     FIRST_CRACK = true;
+    FC_TIME = new Date()
   });
 
 firstCrackTimer.addEventListener("start", () => {
@@ -119,18 +122,25 @@ firstCrackTimer.addEventListener("secondsUpdated", () => {
   document.querySelector(
     "#firstCrackTimer .values"
   ).innerHTML = firstCrackTimer.getTimeValues().toString();
+  document.querySelector(
+    "#firstCrackTimer .percent"
+  ).innerHTML = `${(100 * (new Date() - FC_TIME)/(FC_TIME - START_TIME)).toFixed()}%`
 });
 
 firstCrackTimer.addEventListener("reset", () => {
   document.querySelector(
     "#firstCrackTimer .values"
   ).innerHTML = firstCrackTimer.getTimeValues().toString();
+  document.querySelector(
+    "#firstCrackTimer .precent"
+  ).innerHTML = "0%";
 });
 
 const mainTimer = new Timer();
 let COLLECTION_STARTED = false;
 document.querySelector("#timer .startButton").addEventListener("click", () => {
   mainTimer.start();
+  START_TIME = new Date()
   COLLECTION_STARTED = true;
 });
 
@@ -172,10 +182,10 @@ mainTimer.addEventListener("reset", () => {
   ).innerHTML = mainTimer.getTimeValues().toString();
 });
 
-document.querySelector("#timer .startButton").addEventListener("click", () => {
-  mainTimer.start();
-  COLLECTION_STARTED = true;
-});
+// document.querySelector("#timer .startButton").addEventListener("click", () => {
+//   mainTimer.start();
+//   COLLECTION_STARTED = true;
+// });
 
 let CSV_DATA = "Time,BeanTemperature,FC,FAN,HEAT,TEMPERATURE\n";
 function download_csv() {

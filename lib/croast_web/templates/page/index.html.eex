@@ -1,5 +1,5 @@
 <div id="timer">
-    <span>Total Time </span><span class="values">00:00:00</span>
+    <label>Total Time </label><span class="values">00:00:00</span>
     <div>
         <button class="startButton">Start Roast</button>
         <button class="stopButton">Stop Roast</button>
@@ -8,7 +8,10 @@
 </div>
 
 <div id="firstCrackTimer">
-    <span>Development Time </span><span class="values">00:00:00</span>
+    <label>Development</label>
+    <span>Time: </span><span class="values">00:00:00</span>
+    <br>
+    <span>Precent: </span><span class="percent">0%</span>
     <div>
         <button class="recordButton">Record First Crack</button>
     </div>
@@ -18,7 +21,7 @@
     <label>Fan: <input id="fan" name="fan" type="number"  min="1" max="9"/></label>
     <label>Heat: <input id="heat" name="heat" type="number"  min="1" max="9"/></label>
     <label>Temperature: <input id="temperature" name="temperature" type="number"  min="0" max="600"/></label>
-    <button class="recordTelemetry">Record</button>
+    <button class="recordTelemetry">Set</button>
 </div>
 
 <canvas id="roastChart"></canvas>
