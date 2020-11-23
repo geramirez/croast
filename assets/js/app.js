@@ -14,6 +14,12 @@ import socket from "./socket"
 import Chart from 'chart.js';
 import { Timer } from 'easytimer.js';
 
+
+
+document.querySelector('#export .downloadButton').addEventListener("click", () => {
+  download_csv();
+});
+
 var ctx = document.getElementById('roastChart');
 var myLineChart = new Chart(ctx, {
   type: 'line',
@@ -102,14 +108,25 @@ document.querySelector('#timer .startButton').addEventListener("click", () => {
   COLLECTION_STARTED = true;
 });
 
+let CSV_DATA = 'Time,BeanTemperature,FC\n'
+function download_csv() {
+  var hiddenElement = document.createElement('a');
+  hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(CSV_DATA);
+  hiddenElement.target = '_blank';
+  hiddenElement.download = `roast.csv`;
+  hiddenElement.click();
+}
+
 let channel = socket.channel("telemetry:lobby", {})
-channel.on("temperature", ({ bean, timestamp }) => {
+channel.on("temperature", ({ timestamp, bean }) => {
   if (!COLLECTION_STARTED) return;
 
   myLineChart.data.datasets[0].data.push({
     t: new Date(timestamp),
     y: bean,
   })
+
+  CSV_DATA += `${timestamp},${bean},${FIRST_CRACK}\n`
 
   if (FIRST_CRACK) {
     myLineChart.data.datasets[0].pointRadius.push(5)
@@ -119,10 +136,15 @@ channel.on("temperature", ({ bean, timestamp }) => {
     myLineChart.data.datasets[0].pointRadius.push(3)
     myLineChart.data.datasets[0].pointBackgroundColor.push('blue')
   }
+
+
   myLineChart.update();
 })
 channel.join()
   .receive("ok", resp => { console.log("Joined successfully", resp) })
   .receive("error", resp => { console.log("Unable to join", resp) })
+
+  
+
 
 import "phoenix_html"

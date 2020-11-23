@@ -13,3 +13,9 @@
     </div>
 </div>
 <canvas id="roastChart" width="400" height="400"></canvas>
+<br>
+<div id="export">
+    <div>
+        <button class="downloadButton">Download Data</button>
+    </div>
+</div>
