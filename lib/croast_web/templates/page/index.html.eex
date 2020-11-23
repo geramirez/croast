@@ -1,2 +1,10 @@
+<div id="chronoExample">
+    <div class="values">00:00:00</div>
+    <div>
+        <button class="startButton">Start</button>
+        <button class="pauseButton" >Pause</button>
+        <button class="stopButton">Stop</button>
+        <button class="resetButton">Reset</button>
+    </div>
+</div>
 <canvas id="myChart" width="400" height="400"></canvas>
-<div id="messages" role="log" aria-live="polite"></div>
