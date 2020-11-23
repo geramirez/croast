@@ -89,6 +89,7 @@ document.querySelector('#timer .resetButton').addEventListener("click", () => {
   mainTimer.stop();
   firstCrackTimer.reset();
   firstCrackTimer.stop();
+  CSV_DATA = 'Time,BeanTemperature,FC\n'
 });
 
 mainTimer.addEventListener('secondsUpdated', () => {

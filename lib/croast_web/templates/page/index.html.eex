@@ -12,6 +12,13 @@
         <button class="recordButton">Record First Crack</button>
     </div>
 </div>
+<div id="controlLogs">
+    <label>Fan: <input type="number"  min="1" max="9"/></label>
+    <label>Heat: <input type="number"  min="1" max="9"/></label>
+    <label>Temperature: <input type="number"  min="0" max="600"/></label>
+    <button class="recordTelemetry">Record</button>
+
+</div>
 <canvas id="roastChart" width="400" height="400"></canvas>
 <br>
 <div id="export">
