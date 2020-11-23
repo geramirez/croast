@@ -14,39 +14,7 @@ import socket from "./socket"
 import Chart from 'chart.js';
 import { Timer } from 'easytimer.js';
 
-
-const timer = new Timer();
-let COLLECTION_STARTED = false;
-document.querySelector('#chronoExample .startButton').addEventListener("click", () => {
-  timer.start();
-  COLLECTION_STARTED = true;
-});
-
-document.querySelector('#chronoExample .pauseButton').addEventListener("click", () => {
-  timer.pause();
-});
-
-document.querySelector('#chronoExample .stopButton').addEventListener("click", () => {
-  timer.stop();
-});
-
-document.querySelector('#chronoExample .resetButton').addEventListener("click", () => {
-  timer.reset();
-});
-
-timer.addEventListener('secondsUpdated', function (e) {
-  document.querySelector('#chronoExample .values').innerHTML = timer.getTimeValues().toString();
-});
-
-timer.addEventListener('started', function (e) {
-  document.querySelector('#chronoExample .values').innerHTML = timer.getTimeValues().toString();
-});
-
-timer.addEventListener('reset', function (e) {
-  document.querySelector('#chronoExample .values').innerHTML = timer.getTimeValues().toString();
-});
-
-var ctx = document.getElementById('myChart');
+var ctx = document.getElementById('roastChart');
 var myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
@@ -55,7 +23,9 @@ var myLineChart = new Chart(ctx, {
       data: [],
       label: "Bean Temperature",
       borderColor: "#3e95cd",
-      fill: false
+      fill: false,
+      pointRadius: [],
+      pointBackgroundColor: []
     }
     ]
   },
@@ -73,21 +43,86 @@ var myLineChart = new Chart(ctx, {
   }
 });
 
+let FIRST_CRACK = false;
+const firstCrackTimer = new Timer();
+document.querySelector('#firstCrackTimer .recordButton').addEventListener("click", () => {
+  firstCrackTimer.start();
+  FIRST_CRACK = true;
+});
+
+firstCrackTimer.addEventListener('start', () => {
+  document.querySelector('#firstCrackTimer .values').innerHTML = firstCrackTimer.getTimeValues().toString();
+});
+
+firstCrackTimer.addEventListener('secondsUpdated', () => {
+  document.querySelector('#firstCrackTimer .values').innerHTML = firstCrackTimer.getTimeValues().toString();
+});
+
+firstCrackTimer.addEventListener('reset', () => {
+  document.querySelector('#firstCrackTimer .values').innerHTML = firstCrackTimer.getTimeValues().toString();
+});
+
+const mainTimer = new Timer();
+let COLLECTION_STARTED = false;
+document.querySelector('#timer .startButton').addEventListener("click", () => {
+  mainTimer.start();
+  COLLECTION_STARTED = true;
+});
+
+document.querySelector('#timer .stopButton').addEventListener("click", () => {
+  mainTimer.stop();
+  firstCrackTimer.stop();
+  COLLECTION_STARTED = false;
+});
+
+document.querySelector('#timer .resetButton').addEventListener("click", () => {
+  COLLECTION_STARTED = false;
+  myLineChart.data.datasets[0].data = [];
+  myLineChart.update();
+  mainTimer.reset();
+  mainTimer.stop();
+  firstCrackTimer.reset();
+  firstCrackTimer.stop();
+});
+
+mainTimer.addEventListener('secondsUpdated', () => {
+  document.querySelector('#timer .values').innerHTML = mainTimer.getTimeValues().toString();
+});
+
+mainTimer.addEventListener('started', () => {
+  document.querySelector('#timer .values').innerHTML = mainTimer.getTimeValues().toString();
+});
+
+mainTimer.addEventListener('reset', () => {
+  document.querySelector('#timer .values').innerHTML = mainTimer.getTimeValues().toString();
+});
+
+document.querySelector('#timer .startButton').addEventListener("click", () => {
+  mainTimer.start();
+  COLLECTION_STARTED = true;
+});
 
 let channel = socket.channel("telemetry:lobby", {})
 channel.on("temperature", ({ bean, timestamp }) => {
-  console.log('new temp', bean, timestamp, COLLECTION_STARTED)
   if (!COLLECTION_STARTED) return;
-  myLineChart.data.labels.push(new Date(timestamp))
+
   myLineChart.data.datasets[0].data.push({
     t: new Date(timestamp),
-    y: bean
+    y: bean,
   })
+
+  if (FIRST_CRACK) {
+    myLineChart.data.datasets[0].pointRadius.push(5)
+    myLineChart.data.datasets[0].pointBackgroundColor.push('red')
+    FIRST_CRACK = false
+  } else {
+    myLineChart.data.datasets[0].pointRadius.push(3)
+    myLineChart.data.datasets[0].pointBackgroundColor.push('blue')
+  }
   myLineChart.update();
 })
 channel.join()
   .receive("ok", resp => { console.log("Joined successfully", resp) })
   .receive("error", resp => { console.log("Unable to join", resp) })
-
 
 import "phoenix_html"

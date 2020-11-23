@@ -1,10 +1,15 @@
-<div id="chronoExample">
-    <div class="values">00:00:00</div>
+<div id="timer">
+    <span>Total Time </span><span class="values">00:00:00</span>
     <div>
-        <button class="startButton">Start</button>
-        <button class="pauseButton" >Pause</button>
-        <button class="stopButton">Stop</button>
-        <button class="resetButton">Reset</button>
+        <button class="startButton">Start Roast</button>
+        <button class="stopButton">Stop Roast</button>
+        <button class="resetButton">New Roast</button>
     </div>
 </div>
-<canvas id="myChart" width="400" height="400"></canvas>
+<div id="firstCrackTimer">
+    <span>Development Time </span><span class="values">00:00:00</span>
+    <div>
+        <button class="recordButton">Record First Crack</button>
+    </div>
+</div>
+<canvas id="roastChart" width="400" height="400"></canvas>
