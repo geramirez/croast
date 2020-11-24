@@ -104,19 +104,21 @@ let FIRST_CRACK = false;
 let FC_TIME = 0;
 let START_TIME = 0
 const firstCrackTimer = new Timer();
+
 document
   .querySelector("#firstCrackTimer .recordButton")
   .addEventListener("click", () => {
     firstCrackTimer.start();
     FIRST_CRACK = true;
     FC_TIME = new Date()
+    document.querySelector('#firstCrackTimer .recordButton').style.display = "none";
   });
 
 firstCrackTimer.addEventListener("start", () => {
   document.querySelector(
     "#firstCrackTimer .values"
   ).innerHTML = firstCrackTimer.getTimeValues().toString();
-});
+})
 
 firstCrackTimer.addEventListener("secondsUpdated", () => {
   document.querySelector(
@@ -124,7 +126,7 @@ firstCrackTimer.addEventListener("secondsUpdated", () => {
   ).innerHTML = firstCrackTimer.getTimeValues().toString();
   document.querySelector(
     "#firstCrackTimer .percent"
-  ).innerHTML = `${(100 * (new Date() - FC_TIME)/(FC_TIME - START_TIME)).toFixed()}%`
+  ).innerHTML = `${(100 * (new Date() - FC_TIME) / (FC_TIME - START_TIME)).toFixed()}%`
 });
 
 firstCrackTimer.addEventListener("reset", () => {
@@ -132,7 +134,7 @@ firstCrackTimer.addEventListener("reset", () => {
     "#firstCrackTimer .values"
   ).innerHTML = firstCrackTimer.getTimeValues().toString();
   document.querySelector(
-    "#firstCrackTimer .precent"
+    "#firstCrackTimer .percent"
   ).innerHTML = "0%";
 });
 
@@ -142,12 +144,18 @@ document.querySelector("#timer .startButton").addEventListener("click", () => {
   mainTimer.start();
   START_TIME = new Date()
   COLLECTION_STARTED = true;
+  FIRST_CRACK = false;
+  FC_TIME = 0;
+  document.querySelector('#timer .startButton').style.display = "none";
+  document.querySelector('#timer .stopButton').style.display = "inline";
 });
 
 document.querySelector("#timer .stopButton").addEventListener("click", () => {
   mainTimer.stop();
   firstCrackTimer.stop();
   COLLECTION_STARTED = false;
+  document.querySelector('#timer .stopButton').style.display = "none";
+  document.querySelector('#timer .resetButton').style.display = "inline";
 });
 
 document.querySelector("#timer .resetButton").addEventListener("click", () => {
@@ -159,9 +167,18 @@ document.querySelector("#timer .resetButton").addEventListener("click", () => {
   myLineChart.update();
   mainTimer.reset();
   mainTimer.stop();
-  firstCrackTimer.reset();
-  firstCrackTimer.stop();
+  
+  document.querySelector(
+    "#firstCrackTimer .values"
+  ).innerHTML = firstCrackTimer.getTimeValues().toString();
+  document.querySelector(
+    "#firstCrackTimer .percent"
+  ).innerHTML = "0%";
+
   CSV_DATA = "Time,BeanTemperature,FC,FAN,HEAT,TEMPERATURE\n";
+  document.querySelector('#timer .resetButton').style.display = "none";
+  document.querySelector('#timer .startButton').style.display = "inline";
+  document.querySelector('#firstCrackTimer .recordButton').style.display = "inline";
 });
 
 mainTimer.addEventListener("secondsUpdated", () => {
@@ -181,11 +198,6 @@ mainTimer.addEventListener("reset", () => {
     "#timer .values"
   ).innerHTML = mainTimer.getTimeValues().toString();
 });
-
-// document.querySelector("#timer .startButton").addEventListener("click", () => {
-//   mainTimer.start();
-//   COLLECTION_STARTED = true;
-// });
 
 let CSV_DATA = "Time,BeanTemperature,FC,FAN,HEAT,TEMPERATURE\n";
 function download_csv() {
@@ -232,6 +244,7 @@ channel.on("temperature", ({ timestamp, bean }) => {
 
   myLineChart.update();
 });
+
 channel
   .join()
   .receive("ok", (resp) => {
@@ -241,4 +254,4 @@ channel
     console.log("Unable to join", resp);
   });
 
-import "phoenix_html";
+import "phoenix_html"

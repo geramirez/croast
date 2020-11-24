@@ -2,8 +2,8 @@
     <label>Total Time </label><span class="values">00:00:00</span>
     <div>
         <button class="startButton">Start Roast</button>
-        <button class="stopButton">Stop Roast</button>
-        <button class="resetButton">New Roast</button>
+        <button class="stopButton" style="display: none">Stop Roast</button>
+        <button class="resetButton" style="display: none">New Roast</button>
     </div>
 </div>
 
