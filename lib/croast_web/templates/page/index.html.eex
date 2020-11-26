@@ -1,33 +1,86 @@
-<div id="timer">
-    <label>Total Time </label><span class="values">00:00:00</span>
-    <div>
-        <button class="startButton">Start Roast</button>
-        <button class="stopButton" style="display: none">Stop Roast</button>
-        <button class="resetButton" style="display: none">New Roast</button>
+<div class="row">
+    <div class="column">
+    <label>Total Time</label>
+    <h2 id="roastTime">00:00:00</h2>
+    </div>
+    <div class="column">
+        <label>Bean Temperature</label>
+        <h2 id="beanTemperature"></h2>
+    </div>
+    <div class="column">
+    <label>Development Percentage</label>
+    <h2 id="developmentPercent">0%</h2>
     </div>
 </div>
-
-<div id="firstCrackTimer">
-    <label>Development</label>
-    <span>Time: </span><span class="values">00:00:00</span>
-    <br>
-    <span>Precent: </span><span class="percent">0%</span>
-    <div>
-        <button class="recordButton">Record First Crack</button>
+<div class="row">
+    <div id="timer" class="column">
+    <button class="button button-custom startButton">
+        Start Roast
+    </button>
+    <button
+        class="button button-custom stopButton"
+        style="display: none"
+    >
+        Stop Roast
+    </button>
+    <button
+        class="button button-custom resetButton"
+        style="display: none"
+    >
+        New Roast
+    </button>
+    </div>
+ <div class="column"></div>
+    <div id="firstCrackTimer" class="column">
+    <button class="button button-custom recordButton">
+        Record First Crack
+    </button>
     </div>
 </div>
+<div class="row">
+    <div id="controlLogs" class="column">
+    <div class="row">
+        <div class="column">
+        <label
+            >Fan:
+            <input id="fan" name="fan" type="number" min="1" max="9"
+        /></label>
+        </div>
+        <div class="column">
+        <label
+            >Heat:
+            <input id="heat" name="heat" type="number" min="1" max="9"
+        /></label>
+        </div>
+        <div class="column">
+        <label
+            >Temperature:
+            <input
+            id="temperature"
+            name="temperature"
+            type="number"
+            min="0"
+            max="600"
+        /></label>
+        </div>
 
-<div id="controlLogs">
-    <label>Fan: <input id="fan" name="fan" type="number"  min="1" max="9"/></label>
-    <label>Heat: <input id="heat" name="heat" type="number"  min="1" max="9"/></label>
-    <label>Temperature: <input id="temperature" name="temperature" type="number"  min="0" max="600"/></label>
-    <button class="recordTelemetry">Set</button>
+    </div>
+    </div>
 </div>
-
+<div class="row">
+    <div class="column">
+    <button id="recordTelemetry" class="button button-custom">
+        Record
+    </button>
+    </div>
+</div>
 <canvas id="roastChart"></canvas>
-<br>
+<br />
+
 <div id="export">
     <div>
-        <button class="downloadButton">Download Data</button>
+    <button class="button button-custom downloadButton">
+        Download Data
+    </button>
     </div>
 </div>

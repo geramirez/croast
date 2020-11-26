@@ -2,14 +2,8 @@
 // The MiniCssExtractPlugin is used to separate it out into
 // its own CSS file.
 import "../css/app.scss";
+import "milligram"
 
-// webpack automatically bundles all modules in your
-// entry points. Those entry points can be configured
-// in "webpack.config.js".
-//
-// Import deps with the dep name or local files with a relative path, for example:
-//
-//     import {Socket} from "phoenix"
 import socket from "./socket";
 import Chart from "chart.js";
 import { Timer } from "easytimer.js";
@@ -22,7 +16,7 @@ document
 
 let FAN, HEAT, TEMPERATURE;
 document
-  .querySelector("#controlLogs .recordTelemetry")
+  .querySelector("#recordTelemetry")
   .addEventListener("click", () => {
     FAN = parseInt(document.getElementById("fan").value);
     HEAT = parseInt(document.getElementById("heat").value);
@@ -36,8 +30,22 @@ const myLineChart = new Chart(ctx, {
     datasets: [
       {
         data: [],
+        label: "Fan",
+        yAxisID: "fan-power",
+        borderColor: "green",
+        fill: false,
+      },
+      {
+        data: [],
+        label: "Power",
+        yAxisID: "fan-power",
+        borderColor: "black",
+        fill: false,
+      },
+      {
+        data: [],
         label: "Bean Temperature",
-        yAxisID: "bean",
+        yAxisID: "temp",
         borderColor: "#3e95cd",
         fill: false,
         pointRadius: [],
@@ -45,22 +53,8 @@ const myLineChart = new Chart(ctx, {
       },
       {
         data: [],
-        label: "Fan",
-        yAxisID: "fan",
-        borderColor: "green",
-        fill: false,
-      },
-      {
-        data: [],
-        label: "Power",
-        yAxisID: "power",
-        borderColor: "black",
-        fill: false,
-      },
-      {
-        data: [],
         label: "Env. Temperature",
-        yAxisID: "envTemp",
+        yAxisID: "temp",
         borderColor: "purple",
         fill: false,
       },
@@ -80,20 +74,26 @@ const myLineChart = new Chart(ctx, {
       ],
       yAxes: [
         {
-          id: "bean",
-          ticks: { min: 0 },
+          id: "temp",
+          position: 'left',
+          scaleLabel: {
+            display: true,
+            labelString: 'Temperature',
+            fontColor: '#000000',
+            fontSize: 10
+          },
+          ticks: { min: 0, max: 550, },
         },
         {
-          id: "fan",
-          ticks: { min: 0, max: 9, stepSize: 1 },
-        },
-        {
-          id: "power",
-          ticks: { min: 0, max: 9, stepSize: 1 },
-        },
-        {
-          id: "envTemp",
-          ticks: { min: 0 },
+          id: "fan-power",
+          ticks: { min: 0, max: 20, stepSize: 1 },
+          position: 'right',
+          scaleLabel: {
+            display: true,
+            labelString: 'Fan/Power',
+            fontColor: '#000000',
+            fontSize: 10
+          },
         },
       ],
     },
@@ -110,31 +110,28 @@ document
   .addEventListener("click", () => {
     firstCrackTimer.start();
     FIRST_CRACK = true;
+    FAN = parseInt(document.getElementById("fan").value);
+    HEAT = parseInt(document.getElementById("heat").value);
+    TEMPERATURE = parseInt(document.getElementById("temperature").value);
     FC_TIME = new Date()
     document.querySelector('#firstCrackTimer .recordButton').style.display = "none";
   });
 
 firstCrackTimer.addEventListener("start", () => {
   document.querySelector(
-    "#firstCrackTimer .values"
-  ).innerHTML = firstCrackTimer.getTimeValues().toString();
+    "#developmentPercent"
+  ).innerHTML = "0%";
 })
 
 firstCrackTimer.addEventListener("secondsUpdated", () => {
   document.querySelector(
-    "#firstCrackTimer .values"
-  ).innerHTML = firstCrackTimer.getTimeValues().toString();
-  document.querySelector(
-    "#firstCrackTimer .percent"
+    "#developmentPercent"
   ).innerHTML = `${(100 * (new Date() - FC_TIME) / (FC_TIME - START_TIME)).toFixed()}%`
 });
 
 firstCrackTimer.addEventListener("reset", () => {
   document.querySelector(
-    "#firstCrackTimer .values"
-  ).innerHTML = firstCrackTimer.getTimeValues().toString();
-  document.querySelector(
-    "#firstCrackTimer .percent"
+    "#developmentPercent"
   ).innerHTML = "0%";
 });
 
@@ -167,12 +164,9 @@ document.querySelector("#timer .resetButton").addEventListener("click", () => {
   myLineChart.update();
   mainTimer.reset();
   mainTimer.stop();
-  
+
   document.querySelector(
-    "#firstCrackTimer .values"
-  ).innerHTML = firstCrackTimer.getTimeValues().toString();
-  document.querySelector(
-    "#firstCrackTimer .percent"
+    "#developmentPercent"
   ).innerHTML = "0%";
 
   CSV_DATA = "Time,BeanTemperature,FC,FAN,HEAT,TEMPERATURE\n";
@@ -183,19 +177,19 @@ document.querySelector("#timer .resetButton").addEventListener("click", () => {
 
 mainTimer.addEventListener("secondsUpdated", () => {
   document.querySelector(
-    "#timer .values"
+    "#roastTime"
   ).innerHTML = mainTimer.getTimeValues().toString();
 });
 
 mainTimer.addEventListener("started", () => {
   document.querySelector(
-    "#timer .values"
+    "#roastTime"
   ).innerHTML = mainTimer.getTimeValues().toString();
 });
 
 mainTimer.addEventListener("reset", () => {
   document.querySelector(
-    "#timer .values"
+    "#roastTime"
   ).innerHTML = mainTimer.getTimeValues().toString();
 });
 
@@ -212,36 +206,35 @@ let channel = socket.channel("telemetry:lobby", {});
 channel.on("temperature", ({ timestamp, bean }) => {
   if (!COLLECTION_STARTED) return;
 
+  document.querySelector('#beanTemperature').innerHTML = bean;
+
+  const t = new Date(timestamp)
   myLineChart.data.datasets[0].data.push({
-    t: new Date(timestamp),
-    y: bean,
-  });
-
-  CSV_DATA += `${timestamp},${bean},${FIRST_CRACK},${FAN},${HEAT},${TEMPERATURE}\n`;
-
-  if (FIRST_CRACK) {
-    myLineChart.data.datasets[0].pointRadius.push(5);
-    myLineChart.data.datasets[0].pointBackgroundColor.push("red");
-    FIRST_CRACK = false;
-  } else {
-    myLineChart.data.datasets[0].pointRadius.push(3);
-    myLineChart.data.datasets[0].pointBackgroundColor.push("blue");
-  }
-
-  const t = new Date(timestamp);
-  myLineChart.data.datasets[1].data.push({
     t,
     y: FAN,
   });
-  myLineChart.data.datasets[2].data.push({
+  myLineChart.data.datasets[1].data.push({
     t,
     y: HEAT,
+  });
+  myLineChart.data.datasets[2].data.push({
+    t,
+    y: bean,
   });
   myLineChart.data.datasets[3].data.push({
     t,
     y: TEMPERATURE,
   });
 
+  CSV_DATA += `${timestamp},${bean},${FIRST_CRACK},${FAN},${HEAT},${TEMPERATURE}\n`;
+  if (FIRST_CRACK) {
+    myLineChart.data.datasets[2].pointRadius.push(5);
+    myLineChart.data.datasets[2].pointBackgroundColor.push("red");
+    FIRST_CRACK = false;
+  } else {
+    myLineChart.data.datasets[2].pointRadius.push(3);
+    myLineChart.data.datasets[2].pointBackgroundColor.push("blue");
+  }
   myLineChart.update();
 });
 
